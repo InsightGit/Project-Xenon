@@ -38,15 +38,20 @@ namespace xenon {
             if(Connect("192.168.1.99") != sf::Socket::Done){
                 return false;
             }
-            sf::Packet recievingpacket;
-            if(RecievePacket(&recievingpacket) != sf::Socket::Done){
+            sf::Packet packettouse;
+            packettouse << std::string("versionnumrequest");
+            if(SendPacket(&packettouse) != sf::Socket::Done){
+                Disconnect();
+                return false;
+            }
+            if(RecievePacket(&packettouse) != sf::Socket::Done){
                 Disconnect();
                 return false;
             }
             int majorversion = -1;
             int minorversion = -1;
             int patchversion = -1;
-            if(recievingpacket >> majorversion >> minorversion >> patchversion){
+            if(packettouse >> majorversion >> minorversion >> patchversion){
                 if(!(majorversion>= 0 && minorversion>=0 && patchversion>=0)){  //check if version numbers are not valid
                     Disconnect();
                     return false;
