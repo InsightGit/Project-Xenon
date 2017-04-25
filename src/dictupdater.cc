@@ -39,11 +39,11 @@ namespace xenon {
                 return false;
             }
             sf::Packet packettouse;
-            packettouse << std::string("versionnumrequest");
+            /*packettouse << std::string("versionnumrequest");
             if(SendPacket(&packettouse) != sf::Socket::Done){
                 Disconnect();
                 return false;
-            }
+            }*/
             if(RecievePacket(&packettouse) != sf::Socket::Done){
                 Disconnect();
                 return false;

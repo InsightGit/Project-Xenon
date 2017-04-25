@@ -23,7 +23,7 @@ namespace xenon {
 
     void Scene::Draw(sf::RenderWindow *window){
         if(GetId()==0){
-            CheckForUpdates();
+            jsonroot = Json::Value(GetJsonFileText());
         }
     }
 } /* namespace xenon */
