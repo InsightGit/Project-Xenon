@@ -9,26 +9,57 @@
 #define VERSIONPARSER_H_
 #include <windows.h>
 
+#include <stdexcept>
+#include <sstream>
+#include <fstream>
+
 #include <json/value.h>
+
+#include <SFML/Graphics.hpp>
+
+//including resource files
+#include "Resources/chromeicon.h"
+#include "Resources/firefoxicon.h"
 
 namespace xenon {
     namespace dict {
-        namespace internaldict{
-            static xenon::dict::AppStatus GetChromeAppStatus(std::string location, std::string latestversion);
-        }
         enum AppStatus{
             SecurityIssue,
             NotUpToDate,
             UpToDate,
             NonExistant
         };
+
+        struct AppData{
+            sf::Image appicon;
+            std::string appname;
+        };
+
+        namespace internaldict{
+            static xenon::dict::AppStatus GetChromeAppStatus(const std::string latestversion);
+            static std::string GetFirefoxProfileId();
+            static xenon::dict::AppStatus GetFirefoxAppStatus(const std::string latestversion);
+            static xenon::dict::AppData NameToAppData(const std::string name);
+        }
+
+        struct VersionParserData{
+            std::vector<AppData> appsnotuptodate;
+            int numberofappsnotuptodate = 0;
+            std::vector<AppData> appssecurityissues;
+            int numberofappssecurityissues = 0;
+            std::vector<AppData> appsuptodate;
+            int numberofappsuptodate = 0;
+        };
+
         class VersionParser {
         public:
             VersionParser(Json::Value *applicationproperties);
             virtual ~VersionParser();
 
-            AppStatus GetAppStatus();
+            VersionParserData ParseVersions();
         protected:
+            AppStatus GetAppStatus(const std::string appname,const std::string applatestversion,const char *applocation);
+
             Json::Value appproperties;
 
             bool FileExists(LPCTSTR filepath){

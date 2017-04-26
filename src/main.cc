@@ -13,7 +13,9 @@
 void DrawScene(sf::RenderWindow *windowtouse, xenon::Scene *currentscene){
     windowtouse->clear();
     currentscene->Draw(windowtouse);
-    windowtouse->display();
+    if(currentscene->GetId()>=1){
+        windowtouse->display();
+    }
 }
 
 void WindowLoop(sf::RenderWindow *windowtouse, xenon::Scene *currentscene){

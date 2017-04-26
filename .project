@@ -24,4 +24,16 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/chromeicon.h</name>
+			<type>1</type>
+			<locationURI>PROJECT_LOC/src/Resources/chromeicon.h</locationURI>
+		</link>
+		<link>
+			<name>src/firefoxicon.h</name>
+			<type>1</type>
+			<locationURI>PROJECT_LOC/src/Resources/firefoxicon.h</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>

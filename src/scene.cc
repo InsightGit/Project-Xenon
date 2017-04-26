@@ -22,8 +22,14 @@ namespace xenon {
     }
 
     void Scene::Draw(sf::RenderWindow *window){
+        //checks apps versions
         if(GetId()==0){
-            jsonroot = Json::Value(GetJsonFileText());
+            Json::Value jsonroot = Json::Value(GetJsonFileText());
+            xenon::dict::VersionParser parser(&(jsonroot["apps"]));
+            SetAppStatuses(parser.ParseVersions());
+            SetId(1);
+        }else if(GetId()==1){
+            //
         }
     }
 } /* namespace xenon */

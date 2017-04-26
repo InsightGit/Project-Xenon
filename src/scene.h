@@ -36,18 +36,29 @@ namespace xenon {
         bool CheckForUpdates(){
             return updater_.CheckForUpdates();
         }
+
         std::string GetJsonFileText(){
             std::stringstream jsonfilebuffer;
             jsonfilebuffer << jsonfile_.rdbuf();
             jsonfile_.close();
             return jsonfilebuffer.str();
         }
+
+
+        const dict::VersionParserData& GetAppStatuses() const {
+            return appstatuses_;
+        }
+
+        void SetAppStatuses(const dict::VersionParserData& appstatuses) {
+            appstatuses_ = appstatuses;
+        }
+
     private:
         int id_;
-        std::ifstream jsonfile_ = std::ifstream("%appdata%/VersionDict.json");
 
-        xenon::dict::DictUpdater updater_;
-        xenon::dict::VersionParser versionparser_;
+        std::ifstream jsonfile_ = std::ifstream("%appdata%/VersionDict.json");
+        dict::DictUpdater updater_;
+        dict::VersionParserData appstatuses_;
     };
 } /* namespace xenon */
 
