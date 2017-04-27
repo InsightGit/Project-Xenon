@@ -66,12 +66,13 @@ namespace xenon {
                 std::stringstream jsonfilebuffer;
                 jsonfilebuffer << jsonfile.rdbuf();
                 jsonfile.close();
-                Json::Value root = Json::Value(jsonfilebuffer.str());
-                if(root["version"]["major"].asInt() < majorversion){
+                rapidjson::Document root;
+                root.Parse(jsonfilebuffer.str().c_str());
+                if(root["version"]["major"].GetInt() < majorversion){
                     Update();
-                }else if(root["version"]["minor"].asInt() < minorversion){
+                }else if(root["version"]["minor"].GetInt() < minorversion){
                     Update();
-                }else if(root["version"]["patch"].asInt() < patchversion){
+                }else if(root["version"]["patch"].GetInt() < patchversion){
                     Update();
                 }else{
                     return false;

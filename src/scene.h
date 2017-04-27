@@ -8,6 +8,9 @@
 #ifndef SCENE_H_
 #define SCENE_H_
 #include <tchar.h>
+#include <Shlobj.h>
+#include <windows.h>
+#include <stdlib.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -27,8 +30,6 @@ namespace xenon {
 
         void Draw(sf::RenderWindow *window);
     protected:
-        Json::Value jsonroot;
-
         void SetId(int id) {
             id_ = id;
         }
@@ -38,9 +39,17 @@ namespace xenon {
         }
 
         std::string GetJsonFileText(){
+            std::ifstream jsonfile;
+            WCHAR path[MAX_PATH];
+            char *pathchar;
+            SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, path);
+            wcstombs(pathchar,path,MAX_PATH);
+            std::string textfilepath = *pathchar+"\AppData\Roaming\VersionDict.json";
+            jsonfile.open("VersionDict.json");
+            std::cout << "Open:" << jsonfile.is_open() << "\n";
             std::stringstream jsonfilebuffer;
-            jsonfilebuffer << jsonfile_.rdbuf();
-            jsonfile_.close();
+            jsonfilebuffer << jsonfile.rdbuf();
+            std::cout << jsonfilebuffer.str();
             return jsonfilebuffer.str();
         }
 
@@ -56,7 +65,6 @@ namespace xenon {
     private:
         int id_;
 
-        std::ifstream jsonfile_ = std::ifstream("%appdata%/VersionDict.json");
         dict::DictUpdater updater_;
         dict::VersionParserData appstatuses_;
     };

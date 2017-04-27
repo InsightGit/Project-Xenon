@@ -12,8 +12,9 @@
 #include <stdexcept>
 #include <sstream>
 #include <fstream>
+#include <iostream>
 
-#include <json/value.h>
+#include <rapidjson/Document.h>
 
 #include <SFML/Graphics.hpp>
 
@@ -53,14 +54,14 @@ namespace xenon {
 
         class VersionParser {
         public:
-            VersionParser(Json::Value *applicationproperties);
+            VersionParser(const std::string jsontext);
             virtual ~VersionParser();
 
             VersionParserData ParseVersions();
         protected:
-            AppStatus GetAppStatus(const std::string appname,const std::string applatestversion,const char *applocation);
+            AppStatus GetAppStatus(const std::string appname,const std::string applatestversion);
 
-            Json::Value appproperties;
+            rapidjson::Document appproperties;
 
             bool FileExists(LPCTSTR filepath){
                 DWORD fileattribs = GetFileAttributes(filepath);

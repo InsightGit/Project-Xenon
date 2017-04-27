@@ -15,7 +15,8 @@
 #include <sstream>
 
 #include <SFML/Network.hpp>
-#include <json/value.h>
+//#include <json/value.h>
+#include <rapidjson/Document.h>
 
 namespace xenon {
     namespace dict {

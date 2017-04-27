@@ -14,10 +14,11 @@ namespace xenon {
                 //detects chrome version number (only works if user has opened app)
                 std::ifstream chromejsondatafile("%homepath%/AppData/Local/Google/Chrome/User Data/Local State");
                 std::stringstream chromejsondatafilestream;
+                rapidjson::Document chromejsonroot;
                 chromejsondatafilestream << chromejsondatafile.rdbuf();
-                Json::Value chromejsonroot(chromejsondatafilestream.str());
-                int versionnumber =(chromejsonroot["variations_permanent_consistancy_country"][0].asCString())[0]*10; //?
-                versionnumber = versionnumber + chromejsonroot["variations_permanent_consistancy_country"][0].asCString()[1];
+                chromejsonroot.Parse(chromejsondatafilestream.str().c_str());
+                int versionnumber =(chromejsonroot["variations_permanent_consistancy_country"][0].GetString())[0]*10; //?
+                versionnumber = versionnumber + chromejsonroot["variations_permanent_consistancy_country"][0].GetString()[1];
                 if(versionnumber >= std::stoi(latestversion)){
                     return xenon::dict::UpToDate;
                 }else if(versionnumber <= 40){
@@ -25,6 +26,7 @@ namespace xenon {
                 }else{
                     return xenon::dict::NotUpToDate;
                 }
+                std::cout << "Chrome Version Num:" << chromejsonroot["variations_permanent_consistancy_country"].GetString() << "\n";
             }
 
             std::string GetFirefoxProfileId(){
@@ -58,6 +60,7 @@ namespace xenon {
                         versionnumstring = linetext[13]+linetext[14];
                     }
                 }
+                std::cout << "Firefox Version Num:" << versionnumstring << "\n";
                 int versionnum = std::stoi(versionnumstring);
                 if(versionnum >= latestversion){
                     return xenon::dict::UpToDate;
@@ -80,16 +83,16 @@ namespace xenon {
             }
         }
 
-        VersionParser::VersionParser(Json::Value *applicationproperties) {
+        VersionParser::VersionParser(const std::string jsontext) {
             // TODO Auto-generated constructor stub
-            appproperties=*applicationproperties;
+            appproperties.Parse(jsontext.c_str());
         }
 
         VersionParser::~VersionParser() {
             // TODO Auto-generated destructor stub
         }
 
-        AppStatus VersionParser::GetAppStatus(const std::string appname,const std::string applatestversion,const char *applocation){
+        AppStatus VersionParser::GetAppStatus(const std::string appname,const std::string applatestversion){
             /*if(sizeof(size_t) == 4){
                 //32 bit operations
 
@@ -98,13 +101,13 @@ namespace xenon {
 
             }*/
             if(appname == "Google Chrome"){
-                if(FileExists(applocation)){
+                if(FileExists("%homepath%/AppData/Local/Google/Chrome/User Data/Local State")){
                     return internaldict::GetChromeAppStatus(applatestversion);
                 }else{
                     return NonExistant;
                 }
             }else if(appname == "Mozilla Firefox"){
-                if(FileExists(applocation)){
+                if(FileExists("%appdata%/Mozilla/Firefox/Profiles/profiles.ini")){
                     return internaldict::GetFirefoxAppStatus(std::stoi(applatestversion));
                 }else{
                     return NonExistant;
@@ -114,9 +117,9 @@ namespace xenon {
 
         VersionParserData VersionParser::ParseVersions(){
             VersionParserData datatoreturn;
-            for(int i = 0;appproperties["number"] > i;++i){
-                AppStatus status = GetAppStatus(appproperties["list"][i]["name"].asString(),appproperties["list"][i]["latestversion"].asString(),appproperties["list"][i]["location"].asCString());
-                AppData appdata = internaldict::NameToAppData(appproperties["list"][i]["name"].asString());
+            for(int i = 0;appproperties["updateapps"]["number"].GetInt() > i;++i){
+                AppStatus status = GetAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),appproperties["updateapps"]["list"][i]["latestversion"].GetString());
+                AppData appdata = internaldict::NameToAppData(appproperties["updateapps"]["list"][i]["name"].GetString());
 
                 if(status == UpToDate){
                     datatoreturn.appsuptodate.push_back(appdata);
