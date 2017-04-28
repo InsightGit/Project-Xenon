@@ -5,6 +5,8 @@
  *      Author: Bobby
  */
 
+#define __USE_MINGW_ANSI_STDIO 0
+
 #ifndef VERSIONPARSER_H_
 #define VERSIONPARSER_H_
 #include <windows.h>
@@ -63,10 +65,10 @@ namespace xenon {
 
             rapidjson::Document appproperties;
 
-            bool FileExists(LPCTSTR filepath){
-                DWORD fileattribs = GetFileAttributes(filepath);
+            bool FileExists(std::string filepath){
+                std::ifstream filetoverify(filepath);
 
-                return (fileattribs != INVALID_FILE_ATTRIBUTES && !(fileattribs & FILE_ATTRIBUTE_DIRECTORY));
+                return filetoverify.good();
             }
         };
     } /* namespace dict */

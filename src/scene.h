@@ -39,17 +39,13 @@ namespace xenon {
         }
 
         std::string GetJsonFileText(){
-            std::ifstream jsonfile;
-            WCHAR path[MAX_PATH];
-            char *pathchar;
-            SHGetFolderPathW(NULL, CSIDL_PROFILE, NULL, 0, path);
-            wcstombs(pathchar,path,MAX_PATH);
-            std::string textfilepath = *pathchar+"\AppData\Roaming\VersionDict.json";
-            jsonfile.open("VersionDict.json");
-            std::cout << "Open:" << jsonfile.is_open() << "\n";
+            std::string path = getenv("APPDATA");
+            path.append("/VersionDict.json");
+            std::cout << "Path:" << path << "\n";
+            std::ifstream jsonfile(path);
             std::stringstream jsonfilebuffer;
             jsonfilebuffer << jsonfile.rdbuf();
-            std::cout << jsonfilebuffer.str();
+            std::cout << jsonfilebuffer.str() << "end\n";
             return jsonfilebuffer.str();
         }
 

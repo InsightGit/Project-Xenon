@@ -12,13 +12,21 @@ namespace xenon {
         namespace internaldict{
             xenon::dict::AppStatus GetChromeAppStatus(std::string latestversion){
                 //detects chrome version number (only works if user has opened app)
-                std::ifstream chromejsondatafile("%homepath%/AppData/Local/Google/Chrome/User Data/Local State");
+                std::string path = "C:";
+                path.append(getenv("HOMEPATH"));
+                path.append("/AppData/Local/Google/Chrome/User Data/Local State");
+                std::cout << path << "\n";
+                std::ifstream chromejsondatafile(path);
                 std::stringstream chromejsondatafilestream;
                 rapidjson::Document chromejsonroot;
                 chromejsondatafilestream << chromejsondatafile.rdbuf();
                 chromejsonroot.Parse(chromejsondatafilestream.str().c_str());
-                int versionnumber =(chromejsonroot["variations_permanent_consistancy_country"][0].GetString())[0]*10; //?
-                versionnumber = versionnumber + chromejsonroot["variations_permanent_consistancy_country"][0].GetString()[1];
+                //assert(chromejsonroot["variations_permanent_consistency_country"].HasMember());
+                std::string wholeversionnumber = chromejsonroot["variations_permanent_consistency_country"][0].GetString();
+                int versionnumber = wholeversionnumber[0];
+                versionnumber=versionnumber*10;
+                versionnumber = versionnumber + wholeversionnumber[1];
+                std::cout << "Chrome Version Num:" << chromejsonroot["variations_permanent_consistency_country"][0].GetString() << "\n";
                 if(versionnumber >= std::stoi(latestversion)){
                     return xenon::dict::UpToDate;
                 }else if(versionnumber <= 40){
@@ -26,42 +34,53 @@ namespace xenon {
                 }else{
                     return xenon::dict::NotUpToDate;
                 }
-                std::cout << "Chrome Version Num:" << chromejsonroot["variations_permanent_consistancy_country"].GetString() << "\n";
             }
 
             std::string GetFirefoxProfileId(){
                 //finds what is the firefox profile id of the user
-                std::ifstream firefoxprofilefile("%appdata%/Mozilla/Firefox/profiles.ini");
+                std::string path = getenv("APPDATA");
+                path.append("/Mozilla/Firefox/profiles.ini");
+                std::cout << path << "\n";
+                std::ifstream firefoxprofilefile(path);
                 std::string linetext;
                 unsigned int linenum = 0;
                 std::string profileid;
                 while(std::getline(firefoxprofilefile,linetext)){
-                    if(linenum == 7){
-                        for(unsigned int i = 0; linetext.size() > i;++i){
-                            if(i>=15){
-                                char *currentchar = &linetext[i];
+                    if(linenum == 6){
+                        for(int iterator = 0; linetext.size() > iterator;++iterator){
+                            if(iterator>=14 && profileid.length()<16){
+                                char *currentchar = &linetext[iterator];
                                 profileid.append(currentchar);
                             }
                         }
                     }
+                    linenum++;
                 }
+                std::cout << "profileid:" << profileid << "\n";
                 return profileid;
             }
 
             xenon::dict::AppStatus GetFirefoxAppStatus(int latestversion){
                 std::string profiletext = GetFirefoxProfileId();
                 //Using Firefox profile id, look for version number
-                std::ifstream firefoxcompatibiltyfile("%appdata%/Mozilla/Firefox/Profiles/"+profiletext+"/compatibility.ini");
+                std::string path = getenv("APPDATA");
+                path.append("/Mozilla/Firefox/Profiles/");
+                path.append(profiletext);
+                path.append("/compatibility.ini");
+                std::cout << path << "\n";
+                std::ifstream firefoxcompatibiltyfile(path);
                 std::string linetext;
                 unsigned int linenum = 0;
-                std::string versionnumstring;
+                int versionnum;
                 while(std::getline(firefoxcompatibiltyfile,linetext)){
-                    if(linenum == 2){
-                        versionnumstring = linetext[13]+linetext[14];
+
+                    if(linenum == 1){
+                        versionnum = int(linetext[13])+2;
                     }
+                    linenum++;
                 }
-                std::cout << "Firefox Version Num:" << versionnumstring << "\n";
-                int versionnum = std::stoi(versionnumstring);
+                std::cout << "Firefox Version Num:" << std::to_string(versionnum) << "\n";
+                assert(false);
                 if(versionnum >= latestversion){
                     return xenon::dict::UpToDate;
                 }else if(versionnum <= 43){
@@ -101,13 +120,20 @@ namespace xenon {
 
             }*/
             if(appname == "Google Chrome"){
-                if(FileExists("%homepath%/AppData/Local/Google/Chrome/User Data/Local State")){
+                std::string path = "C:";
+                path.append(getenv("HOMEPATH"));
+                path.append("/AppData/Local/Google/Chrome/User Data/Local State");
+                std::cout << path << "\n";
+                if(FileExists(path.c_str())){
                     return internaldict::GetChromeAppStatus(applatestversion);
                 }else{
                     return NonExistant;
                 }
             }else if(appname == "Mozilla Firefox"){
-                if(FileExists("%appdata%/Mozilla/Firefox/Profiles/profiles.ini")){
+                std::string path = getenv("APPDATA");
+                path.append("/Mozilla/Firefox/profiles.ini");
+                std::cout << path << "\n";
+                if(FileExists(path.c_str())){
                     return internaldict::GetFirefoxAppStatus(std::stoi(applatestversion));
                 }else{
                     return NonExistant;
@@ -117,7 +143,8 @@ namespace xenon {
 
         VersionParserData VersionParser::ParseVersions(){
             VersionParserData datatoreturn;
-            for(int i = 0;appproperties["updateapps"]["number"].GetInt() > i;++i){
+            assert(appproperties.HasMember("updateapps"));
+            for(int i = 0;std::stoi(appproperties["updateapps"]["number"].GetString()) > i;++i){
                 AppStatus status = GetAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),appproperties["updateapps"]["list"][i]["latestversion"].GetString());
                 AppData appdata = internaldict::NameToAppData(appproperties["updateapps"]["list"][i]["name"].GetString());
 
