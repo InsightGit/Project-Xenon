@@ -80,7 +80,6 @@ namespace xenon {
                     linenum++;
                 }
                 std::cout << "Firefox Version Num:" << std::to_string(versionnum) << "\n";
-                assert(false);
                 if(versionnum >= latestversion){
                     return xenon::dict::UpToDate;
                 }else if(versionnum <= 43){
@@ -147,16 +146,18 @@ namespace xenon {
             for(int i = 0;std::stoi(appproperties["updateapps"]["number"].GetString()) > i;++i){
                 AppStatus status = GetAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),appproperties["updateapps"]["list"][i]["latestversion"].GetString());
                 AppData appdata = internaldict::NameToAppData(appproperties["updateapps"]["list"][i]["name"].GetString());
-
                 if(status == UpToDate){
                     datatoreturn.appsuptodate.push_back(appdata);
                     datatoreturn.numberofappsuptodate++;
+                    datatoreturn.totalnumberofapps++;
                 }else if(status == NotUpToDate){
                     datatoreturn.appsnotuptodate.push_back(appdata);
                     datatoreturn.numberofappsnotuptodate++;
+                    datatoreturn.totalnumberofapps++;
                 }else if(status == SecurityIssue){
                     datatoreturn.appssecurityissues.push_back(appdata);
                     datatoreturn.numberofappssecurityissues++;
+                    datatoreturn.totalnumberofapps++;
                 }
             }
             return datatoreturn;

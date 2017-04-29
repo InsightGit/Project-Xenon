@@ -46,6 +46,8 @@ namespace xenon {
         }
 
         struct VersionParserData{
+            int totalnumberofapps = 0;
+
             std::vector<AppData> appsnotuptodate;
             int numberofappsnotuptodate = 0;
             std::vector<AppData> appssecurityissues;

@@ -10,29 +10,41 @@
 
 #include "scene.h"
 
-void DrawScene(sf::RenderWindow *windowtouse, xenon::Scene *currentscene){
+#include "Resources/background.h"
+
+void DrawScene(sf::RenderWindow *windowtouse, xenon::Scene *currentscene, sf::Sprite *backgroundsprite){
     windowtouse->clear();
+    windowtouse->draw(*backgroundsprite);
     currentscene->Draw(windowtouse);
-    if(currentscene->GetId()>=1){
-        windowtouse->display();
-    }
+    windowtouse->display();
 }
 
-void WindowLoop(sf::RenderWindow *windowtouse, xenon::Scene *currentscene){
-    DrawScene(windowtouse,currentscene);
+void WindowLoop(sf::RenderWindow *windowtouse, xenon::Scene *currentscene, sf::Sprite *backgroundsprite){
+    DrawScene(windowtouse,currentscene,backgroundsprite);
 }
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(640,480),"Project Xenon");
+    sf::Image backgroundimage;
+    sf::Texture backgroundtexture;
+    sf::Sprite backgroundsprite;
+
     xenon::Scene currentscene(0);
+
+    backgroundimage.create(BackgroundImage.width,BackgroundImage.height,BackgroundImage.pixel_data);
+    backgroundtexture.loadFromImage(backgroundimage);
+    backgroundsprite.setTexture(backgroundtexture);
+    backgroundsprite.setPosition(sf::Vector2f(0,0));
+
     while(window.isOpen()){
         sf::Event sfmlevent;
         while(window.pollEvent(sfmlevent)){
+            currentscene.Update(&sfmlevent);
             if(sfmlevent.type == sf::Event::Closed){
                 window.close();
             }
         }
-        WindowLoop(&window,&currentscene);
+        WindowLoop(&window,&currentscene,&backgroundsprite);
     }
 	return 0;
 }

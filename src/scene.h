@@ -28,6 +28,7 @@ namespace xenon {
         }
         bool Spawn();
 
+        void Update(sf::Event *currentevent);
         void Draw(sf::RenderWindow *window);
     protected:
         void SetId(int id) {
@@ -58,8 +59,17 @@ namespace xenon {
             appstatuses_ = appstatuses;
         }
 
+        bool IsLostFocus() const {
+            return lostfocus_;
+        }
+
+        void SetLostFocus(bool lostfocus = false) {
+            lostfocus_ = lostfocus;
+        }
+
     private:
         int id_;
+        bool lostfocus_ = false;
 
         dict::DictUpdater updater_;
         dict::VersionParserData appstatuses_;

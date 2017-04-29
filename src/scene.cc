@@ -21,13 +21,21 @@ namespace xenon {
         return true;
     }
 
+    void Scene::Update(sf::Event *currentevent){
+        //ONLY for event updating
+        if(currentevent->type == sf::Event::LostFocus){
+            SetLostFocus(true);
+        }else if(currentevent->type == sf::Event::GainedFocus){
+            SetLostFocus(false);
+        }
+    }
+
     void Scene::Draw(sf::RenderWindow *window){
         //checks apps versions
         if(GetId()==0){
             xenon::dict::VersionParser parser(GetJsonFileText());
             SetAppStatuses(parser.ParseVersions());
             SetId(1);
-
         }else if(GetId()==1){
             //
         }
