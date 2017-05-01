@@ -11,7 +11,7 @@ namespace xenon {
     namespace gui {
         bool ClickableSprite::IsClicked(sf::RenderWindow *window,bool lostfocus,sf::Mouse::Button buttonpressed){
             if(sf::Mouse::isButtonPressed(buttonpressed) && !lostfocus){
-                if(getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(*window)))){
+                if(sprite.getGlobalBounds().contains(sf::Vector2f(sf::Mouse::getPosition(*window)))){
                     return true;
                 }
             }

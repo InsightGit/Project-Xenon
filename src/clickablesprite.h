@@ -12,10 +12,11 @@
 
 namespace xenon {
     namespace gui {
-        class ClickableSprite : sf::Sprite{
+        class ClickableSprite{
         public:
            sf::Texture spritetexture;
            sf::Image spriteimage;
+           sf::Sprite sprite;
 
            bool IsClicked(sf::RenderWindow *window,bool lostfocus,sf::Mouse::Button buttonpressed = sf::Mouse::Left);
         };

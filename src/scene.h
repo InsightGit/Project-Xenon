@@ -15,6 +15,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "dictupdater.h"
+#include "mainscreen.h"
 #include "versionparser.h"
 
 namespace xenon {
@@ -28,9 +29,21 @@ namespace xenon {
         }
         bool Spawn();
 
-        void Update(sf::Event *currentevent);
+        void EventUpdate(sf::Event *currentevent);
         void Draw(sf::RenderWindow *window);
     protected:
+        gui::MainScreen *mainscreen;
+
+        void Update(sf::RenderWindow *window);
+
+        bool GetMainScreenSpawned() const {
+            return mainscreenspawned_;
+        }
+
+        void SetMainScreenSpawned(bool mainscreennotspawned = false) {
+            mainscreenspawned_ = mainscreennotspawned;
+        }
+
         void SetId(int id) {
             id_ = id;
         }
@@ -66,10 +79,10 @@ namespace xenon {
         void SetLostFocus(bool lostfocus = false) {
             lostfocus_ = lostfocus;
         }
-
     private:
         int id_;
         bool lostfocus_ = false;
+        bool mainscreenspawned_ = false;
 
         dict::DictUpdater updater_;
         dict::VersionParserData appstatuses_;

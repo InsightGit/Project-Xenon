@@ -63,10 +63,9 @@ namespace xenon {
 
             VersionParserData ParseVersions();
         protected:
-            AppStatus GetAppStatus(const std::string appname,const std::string applatestversion);
-
             rapidjson::Document appproperties;
 
+            AppStatus GetAppStatus(const std::string appname,const std::string applatestversion);
             bool FileExists(std::string filepath){
                 std::ifstream filetoverify(filepath);
 
