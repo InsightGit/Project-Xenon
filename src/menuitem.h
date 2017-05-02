@@ -12,7 +12,7 @@
 
 namespace xenon {
     namespace gui {
-        class MenuItem : ClickableSprite {
+        class MenuItem : public ClickableSprite {
         public:
             sf::Text title;
         };

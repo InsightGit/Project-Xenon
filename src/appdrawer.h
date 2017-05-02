@@ -9,10 +9,16 @@
 #define APPDRAWER_H_
 
 #include "menuitem.h"
+
+#include "versionparser.h"
+
 #include "scene.h"
 
+#include "Resources/materialbackarrow.h"
+
 #include "Resources/uptodatebanner.h"
-#include "Resources/uptodatebannermaterialback.h"
+#include "Resources/notuptodatebanner.h"
+#include "Resources/securityissuebanner.h"
 
 namespace xenon {
     namespace gui {
@@ -33,6 +39,11 @@ namespace xenon {
             xenon::gui::ClickableSprite banner;
             xenon::gui::ClickableSprite bannerbackarrow;
 
+            void SpawnGenericProgramIcon(xenon::gui::MenuItem *menuitemtouse, sf::Vector2i *placementvector);
+            void UpToDateSpawn();
+            void NotUpToDateSpawn();
+            void SecurityIssueSpawn();
+
             xenon::dict::AppStatus GetAppStatus() const {
                 return appstatus_;
             }
@@ -45,7 +56,7 @@ namespace xenon {
                 return programiconlength_;
             }
 
-            void SetProgramiconlength(unsigned int programiconlength = 0) {
+            void SetProgramIconLength(unsigned int programiconlength = 0) {
                 programiconlength_ = programiconlength;
             }
 

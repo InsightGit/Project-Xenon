@@ -39,7 +39,7 @@ int main() {
     while(window.isOpen()){
         sf::Event sfmlevent;
         while(window.pollEvent(sfmlevent)){
-            currentscene.Update(&sfmlevent);
+            currentscene.EventUpdate(&sfmlevent);
             if(sfmlevent.type == sf::Event::Closed){
                 window.close();
             }

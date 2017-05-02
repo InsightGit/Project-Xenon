@@ -7,13 +7,15 @@
 
 #include "scene.h"
 
+#include "appdrawer.h"
+
 namespace xenon {
     Scene::Scene(int id) {
         id_ = id;
     }
 
     Scene::~Scene() {
-        delete mainscreen;
+        delete mainscreen, appdrawer;
     }
 
     bool Scene::Spawn(){
@@ -44,19 +46,36 @@ namespace xenon {
     void Scene::Draw(sf::RenderWindow *window){
         Update(window);
         if(GetId()==0){
-            //checks apps versions
+            //checks apps version scene
             xenon::dict::VersionParser parser(GetJsonFileText());
             SetAppStatuses(parser.ParseVersions());
             SetId(1);
         }else if(GetId()==1){
+            //main screen scene
             if(!GetMainScreenSpawned()){
                 mainscreen = new gui::MainScreen(GetAppStatuses());
                 mainscreen->Spawn();
                 SetMainScreenSpawned(true);
             }
+            if(IsAppDrawerSpawned()){
+                SetAppDrawerSpawned(false);
+                delete appdrawer;
+            }
             mainscreen->Draw(window);
-        }else if(GetId()==2){
-            //
+        }else if(GetId()>=2 && GetId()<=4 && !IsAppDrawerSpawned()){
+            if(GetId()==2){
+                appdrawer = new gui::AppDrawer(GetAppStatuses(), xenon::dict::UpToDate,this);
+            }else if(GetId()==3){
+                appdrawer = new gui::AppDrawer(GetAppStatuses(), xenon::dict::NotUpToDate,this);
+            }else if(GetId()==4){
+                appdrawer = new gui::AppDrawer(GetAppStatuses(), xenon::dict::SecurityIssue,this);
+            }
+
+            appdrawer->Spawn();
+            SetAppDrawerSpawned(true);
+        }else if(GetId()>=2 && GetId()<=4){
+            //show apps (2==uptodateapps,3==notuptodateapps,4==securityissueapps)
+            appdrawer->Draw(window,IsLostFocus());
         }
     }
 } /* namespace xenon */

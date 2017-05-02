@@ -15,10 +15,15 @@
 #include <SFML/Graphics.hpp>
 
 #include "dictupdater.h"
-#include "mainscreen.h"
 #include "versionparser.h"
 
+#include "mainscreen.h"
+
+
 namespace xenon {
+    namespace gui{
+        class AppDrawer;
+    }
     class Scene : sf::NonCopyable {
     public:
         Scene(int id);
@@ -33,6 +38,7 @@ namespace xenon {
         void Draw(sf::RenderWindow *window);
     protected:
         gui::MainScreen *mainscreen;
+        gui::AppDrawer *appdrawer;
 
         void Update(sf::RenderWindow *window);
 
@@ -79,10 +85,19 @@ namespace xenon {
         void SetLostFocus(bool lostfocus = false) {
             lostfocus_ = lostfocus;
         }
+
+        bool IsAppDrawerSpawned() const {
+            return appdrawerspawned_;
+        }
+
+        void SetAppDrawerSpawned(bool appdrawerspawned = false) {
+            appdrawerspawned_ = appdrawerspawned;
+        }
     private:
         int id_;
         bool lostfocus_ = false;
         bool mainscreenspawned_ = false;
+        bool appdrawerspawned_ = false;
 
         dict::DictUpdater updater_;
         dict::VersionParserData appstatuses_;
