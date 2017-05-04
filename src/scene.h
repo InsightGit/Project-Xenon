@@ -32,6 +32,12 @@ namespace xenon {
         int GetId() const {
             return id_;
         }
+
+        void SetId(int id) {
+            id_ = id;
+        }
+
+
         bool Spawn();
 
         void EventUpdate(sf::Event *currentevent);
@@ -48,10 +54,6 @@ namespace xenon {
 
         void SetMainScreenSpawned(bool mainscreennotspawned = false) {
             mainscreenspawned_ = mainscreennotspawned;
-        }
-
-        void SetId(int id) {
-            id_ = id;
         }
 
         bool CheckForUpdates(){

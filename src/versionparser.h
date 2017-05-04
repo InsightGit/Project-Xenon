@@ -27,22 +27,28 @@
 namespace xenon {
     namespace dict {
         enum AppStatus{
-            SecurityIssue,
+            SecurityIssue,  //this enum does not contain all info; check FullAppStatus
             NotUpToDate,
             UpToDate,
             NonExistant
         };
 
+        struct FullAppStatus{
+            AppStatus appstatus;
+            std::string fullapplocation;
+        };
+
         struct AppData{
             sf::Image appicon;
             std::string appname;
+            std::string fullapplocation;
         };
 
         namespace internaldict{
-            static xenon::dict::AppStatus GetChromeAppStatus(const std::string latestversion);
+            /*static xenon::dict::AppStatus GetChromeAppStatus(const std::string latestversion);
             static std::string GetFirefoxProfileId();
-            static xenon::dict::AppStatus GetFirefoxAppStatus(const std::string latestversion);
-            static xenon::dict::AppData NameToAppData(const std::string name);
+            static xenon::dict::AppStatus GetFirefoxAppStatus(const std::string latestversion);*/
+            static xenon::dict::AppData NameToAppData(const std::string appname, const std::string applocation);
         }
 
         struct VersionParserData{
@@ -65,12 +71,25 @@ namespace xenon {
         protected:
             rapidjson::Document appproperties;
 
-            AppStatus GetAppStatus(const std::string appname,const std::string applatestversion);
+            std::vector<std::string> GetPotentialProgramLocations(int *lengthoutput);
+            // applocation refers to a relative path started in program files directory
+            float GetFileVersion(const char *filepath);
+            AppStatus GetExistingAppStatus(const std::string appname, const float latestversion, const std::string fullapplocation);
+            FullAppStatus GetFullAppStatus(const std::string appname, const float latestversion, const std::string applocation);
             bool FileExists(std::string filepath){
                 std::ifstream filetoverify(filepath);
 
                 return filetoverify.good();
             }
+
+            bool DirectoryExists(const char *filepath){
+                DWORD attributes = GetFileAttributes(filepath);
+
+                return (attributes != INVALID_FILE_ATTRIBUTES &&
+                       (attributes & FILE_ATTRIBUTE_DIRECTORY));
+            }
+        private:
+            bool is64bit_ = false;
         };
     } /* namespace dict */
 } /* namespace xenon */

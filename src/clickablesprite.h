@@ -8,6 +8,7 @@
 #ifndef CLICKABLESPRITE_H_
 #define CLICKABLESPRITE_H_
 
+
 #include <SFML/Graphics.hpp>
 
 namespace xenon {

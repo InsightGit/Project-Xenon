@@ -39,7 +39,7 @@ namespace xenon {
         void AppDrawer::UpToDateSpawn(){
             sf::Vector2i placementvector = sf::Vector2i(1,1);
             for(int i = 1;GetVersionParserData().numberofappsuptodate > i;++i){
-                xenon::gui::MenuItem menuitem;
+                xenon::gui::MenuItem menuitem = xenon::gui::MenuItem(GetVersionParserData().appsuptodate[i]);;
                 //menuitem.spriteimage.copy(GetVersionParserData().appsuptodate[i].appicon,0,0);
                 /*menuitem.spriteimage = GetVersionParserData().appsuptodate[i].appicon;
                 menuitem.spritetexture.loadFromImage(menuitem.spriteimage);*/
@@ -62,7 +62,7 @@ namespace xenon {
         void AppDrawer::NotUpToDateSpawn(){
             sf::Vector2i placementvector = sf::Vector2i(1,1);
             for(int i = 1;GetVersionParserData().numberofappsnotuptodate > i;++i){
-                xenon::gui::MenuItem menuitem;
+                xenon::gui::MenuItem menuitem = xenon::gui::MenuItem(GetVersionParserData().appsnotuptodate[i]);;
 
                 menuitem.title.setString(GetVersionParserData().appsnotuptodate[i].appname);
                 SpawnGenericProgramIcon(&menuitem,&placementvector);
@@ -83,12 +83,11 @@ namespace xenon {
         void AppDrawer::SecurityIssueSpawn(){
             sf::Vector2i placementvector = sf::Vector2i(1,1);
             for(int i = 1;GetVersionParserData().numberofappssecurityissues > i;++i){
-                xenon::gui::MenuItem menuitem;
+                xenon::gui::MenuItem menuitem = xenon::gui::MenuItem(GetVersionParserData().appssecurityissues[i]);
 
                 menuitem.title.setString(GetVersionParserData().appssecurityissues[i].appname);
                 SpawnGenericProgramIcon(&menuitem,&placementvector);
                 programicons.push_back(menuitem);
-
                 programicons[i-1].spriteimage = GetVersionParserData().appsuptodate[i].appicon;
                 programicons[i-1].spritetexture.loadFromImage(programicons[i-1].spriteimage);
                 programicons[i-1].sprite.setTexture(programicons[i-1].spritetexture);
@@ -109,7 +108,6 @@ namespace xenon {
             }else if(GetAppStatus()==xenon::dict::SecurityIssue){
                 SecurityIssueSpawn();
             }
-
             banner.spritetexture.loadFromImage(banner.spriteimage);
             banner.sprite.setTexture(banner.spritetexture);
             banner.sprite.setPosition(sf::Vector2f(0,0));
@@ -120,9 +118,42 @@ namespace xenon {
             bannerbackarrow.sprite.setPosition(sf::Vector2f(640,0));
         }
 
+        void AppDrawer::ExecuteExternalApplication(const TCHAR *appname){
+           // additional information
+            // additional information
+            STARTUPINFO startupinfo;
+            PROCESS_INFORMATION processinfo;
+
+            // set the size of the structures
+            ZeroMemory( &startupinfo, sizeof(startupinfo) );
+            startupinfo.cb = sizeof(startupinfo);
+            ZeroMemory( &processinfo, sizeof(processinfo) );
+
+           // start the program up
+           CreateProcess( appname,   // the path
+             NULL,        // Command line
+             NULL,           // Process handle not inheritable
+             NULL,           // Thread handle not inheritable
+             FALSE,          // Set handle inheritance to FALSE
+             0,              // No creation flags
+             NULL,           // Use parent's environment block
+             NULL,           // Use parent's starting directory
+             &startupinfo,            // Pointer to STARTUPINFO structure
+             &processinfo             // Pointer to PROCESS_INFORMATION structure (removed extra parentheses)
+             );
+             // Close process and thread handles.
+             CloseHandle( processinfo.hProcess );
+             CloseHandle( processinfo.hThread );
+        }
+
         void AppDrawer::Update(sf::RenderWindow *window, bool lostfocus){
             if(bannerbackarrow.IsClicked(window,lostfocus)){
                 GoBackToMainScreen();
+            }
+            for(int i = 0; GetProgramIconLength() > i; ++i){
+                if(programicons[i].IsClicked(window,lostfocus)){
+                    ExecuteExternalApplication(programicons[i].GetAppLocation().c_str());
+                }
             }
         }
 

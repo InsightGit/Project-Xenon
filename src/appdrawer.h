@@ -44,6 +44,9 @@ namespace xenon {
             void NotUpToDateSpawn();
             void SecurityIssueSpawn();
 
+
+            void ExecuteExternalApplication(const TCHAR *appname);
+
             xenon::dict::AppStatus GetAppStatus() const {
                 return appstatus_;
             }
@@ -61,7 +64,7 @@ namespace xenon {
             }
 
             void GoBackToMainScreen(){
-                currentscene_ = new Scene(1);
+                currentscene_->SetId(1);
             }
 
         private:

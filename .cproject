@@ -45,6 +45,7 @@
 								</option>
 								<option id="gnu.cpp.link.option.libs.1322235487" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="sfml-network"/>
+									<listOptionValue builtIn="false" value="version"/>
 									<listOptionValue builtIn="false" value="sfml-system"/>
 									<listOptionValue builtIn="false" value="sfml-window"/>
 									<listOptionValue builtIn="false" value="sfml-graphics"/>
