@@ -96,6 +96,10 @@ namespace xenon {
                     appdatatoreturn.appicon.create(ChromeIcon.width,ChromeIcon.height,ChromeIcon.pixel_data);
                 }else if(appname=="Mozilla Firefox"){
                     appdatatoreturn.appicon.create(FirefoxIcon.width,FirefoxIcon.height,FirefoxIcon.pixel_data);
+                }else if(appname=="Evernote"){
+                    appdatatoreturn.appicon.create(EvernoteIcon.width,EvernoteIcon.height,EvernoteIcon.pixel_data);
+                }else if(appname=="Dropbox"){
+                    appdatatoreturn.appicon.create(DropboxIcon.width,DropboxIcon.height,DropboxIcon.pixel_data);
                 }
                 return appdatatoreturn;
             }
@@ -128,12 +132,12 @@ namespace xenon {
                     std::string programfilespath = singledrivepath;
                     programfilespath.append("/Program Files/");
                     potentialprogramlocations.push_back(programfilespath);
-                    *(lengthoutput)++;
+                    *lengthoutput++;
                     if(is64bit_){
                         std::string programfilespath = singledrivepath;
                         programfilespath.append("/Program Files (x86)/");
                         potentialprogramlocations.push_back(programfilespath);
-                        *(lengthoutput)++;
+                        *lengthoutput++;
                     }
                 }
                 // increments string length to go to next drive
@@ -143,7 +147,7 @@ namespace xenon {
             return potentialprogramlocations;
         }
 
-        float GetFileVersion(const char *filepath){
+        float VersionParser::GetFileVersion(const char *filepath){
             DWORD  versionhandle = 0;
             UINT   size      = 0;
             PBYTE *buffer  = NULL;
@@ -164,31 +168,42 @@ namespace xenon {
                             {
                                 //TODO: (Potential Bug) (Bobby if there is) Make it work on 64-bit hardware
                                 float version = HIWORD(versioninfo->dwProductVersionMS);
-                                version += float(LOWORD(versioninfo->dwProductVersionMS)*0.1);
+                                version += float(LOWORD(versioninfo->dwProductVersionMS))*0.1;
+                                version += float(HIWORD(versioninfo->dwProductVersionLS))*0.01;
                                 delete[] verdata;
                                 return version;
                             }
                         }
                     }
                 }
-                delete[] verdata;
             }
             return NULL;
         }
 
         AppStatus VersionParser::GetExistingAppStatus(const std::string appname, const float latestversion, const std::string fullapplocation){
-            float versionnum = GetFileVersion(fullapplocation.c_str());
+            char *fullapplocationchar = new char[fullapplocation.length()+1];
+            std::strcpy(fullapplocationchar,fullapplocation.c_str());
+            float versionnum = GetFileVersion(fullapplocationchar);
             if(versionnum>=latestversion){
                 return UpToDate;
-            }else if(appname=="Google Chrome"){
-                if(versionnum <= 40){
-                    return SecurityIssue;
-                }
-            }else if(appname=="Mozilla Firefox"){
-                if(versionnum <= 43){
-                    return SecurityIssue;
-                }
             }else if(versionnum < latestversion){
+                if(appname=="Google Chrome"){
+                    if(versionnum <= 40){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="Mozilla Firefox"){
+                    if(versionnum <= 43){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="Evernote"){
+                    if(versionnum <= 4.61){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="Dropbox"){
+                    if(versionnum <= 1.127){
+                        return SecurityIssue;
+                    }
+                }
                 return NotUpToDate;
             }
         }
@@ -198,7 +213,7 @@ namespace xenon {
             std::vector<std::string> potentialprogramlocations = GetPotentialProgramLocations(&lengthofpotentialprogramlocations);
             bool foundprogram = false;
             std::string fullprogramlocation;
-            for(int i = 0;lengthofpotentialprogramlocations > i;++i){
+            for(int i = 0;potentialprogramlocations.size() > i;++i){
                 if(FileExists(potentialprogramlocations[i]+applocation)){
                     foundprogram = true;
                     fullprogramlocation = potentialprogramlocations[i]+applocation;
@@ -217,7 +232,7 @@ namespace xenon {
 
         VersionParserData VersionParser::ParseVersions(){
             VersionParserData datatoreturn;
-            for(int i = 0;std::stoi(appproperties["updateapps"]["number"].GetString()) > i;++i){
+            for(int i = 0;appproperties["updateapps"]["number"].GetInt() > i;++i){
                 FullAppStatus status = GetFullAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),
                         appproperties["updateapps"]["list"][i]["latestversion"].GetFloat(),
                         appproperties["updateapps"]["list"][i]["applocation"].GetString());

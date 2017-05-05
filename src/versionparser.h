@@ -15,6 +15,7 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include <cstring>
 
 #include <rapidjson/Document.h>
 
@@ -23,6 +24,8 @@
 //including resource files
 #include "Resources/chromeicon.h"
 #include "Resources/firefoxicon.h"
+#include "Resources/evernoteicon.h"
+#include "Resources/dropboxicon.h"
 
 namespace xenon {
     namespace dict {

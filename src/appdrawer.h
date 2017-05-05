@@ -8,6 +8,7 @@
 #ifndef APPDRAWER_H_
 #define APPDRAWER_H_
 
+
 #include "menuitem.h"
 
 #include "versionparser.h"
@@ -36,6 +37,7 @@ namespace xenon {
             std::vector<xenon::gui::MenuItem> programicons;
             sf::View programsview = sf::View(sf::FloatRect(0,0,740,580));
             sf::Font font;
+            sf::Clock limitclicks;
             xenon::gui::ClickableSprite banner;
             xenon::gui::ClickableSprite bannerbackarrow;
 
@@ -67,11 +69,19 @@ namespace xenon {
                 currentscene_->SetId(1);
             }
 
+            bool IsLimitClicksSet() const {
+                return limitclicksset_;
+            }
+
+            void SetLimitClicksSet(bool limitclicksset = false) {
+                limitclicksset_ = limitclicksset;
+            }
         private:
             xenon::dict::VersionParserData versionparserdata_;
             xenon::dict::AppStatus appstatus_;
             xenon::Scene *currentscene_;
             unsigned int programiconlength_ = 0;
+            bool limitclicksset_ = false;
         };
     } /* namespace gui */
 } /* namespace xenon */

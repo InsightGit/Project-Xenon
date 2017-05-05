@@ -63,6 +63,7 @@ namespace xenon {
                     uptodatebutton.sprite.setPosition(sf::Vector2f(0,50));
                     SetWorstAppStatus(xenon::dict::UpToDate);
                 }
+
                 if(GetVersionData().numberofappsnotuptodate > 0){
                     notuptodatebutton.spriteimage.create(NotUpToDateButton.width,NotUpToDateButton.height,NotUpToDateButton.pixel_data);
                     notuptodatebutton.spritetexture.loadFromImage(notuptodatebutton.spriteimage);
@@ -70,6 +71,7 @@ namespace xenon {
                     notuptodatebutton.sprite.setPosition(sf::Vector2f(0,190));
                     SetWorstAppStatus(xenon::dict::NotUpToDate);
                 }
+
                 if(GetVersionData().numberofappssecurityissues > 0){
                     securityissuebutton.spriteimage.create(SecurityIssueButton.width,SecurityIssueButton.height,SecurityIssueButton.pixel_data);
                     securityissuebutton.spritetexture.loadFromImage(securityissuebutton.spriteimage);
@@ -77,6 +79,7 @@ namespace xenon {
                     securityissuebutton.sprite.setPosition(sf::Vector2f(0,320));
                     SetWorstAppStatus(xenon::dict::SecurityIssue);
                 }
+
                 SpawnStatusArea();
             }
         }

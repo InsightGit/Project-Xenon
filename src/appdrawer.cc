@@ -27,7 +27,7 @@ namespace xenon {
             menuitemtouse->title.setFillColor(sf::Color::Black);
             menuitemtouse->title.setCharacterSize(12);
 
-            menuitemtouse->sprite.setPosition(placementvector->x*150,placementvector->x*150);
+            menuitemtouse->sprite.setPosition(placementvector->x*150,placementvector->y*150);
             menuitemtouse->title.setPosition(menuitemtouse->sprite.getPosition().x, menuitemtouse->sprite.getPosition().y+138);
             placementvector->x++;
             if(placementvector->x >= 4){
@@ -38,7 +38,7 @@ namespace xenon {
 
         void AppDrawer::UpToDateSpawn(){
             sf::Vector2i placementvector = sf::Vector2i(1,1);
-            for(int i = 1;GetVersionParserData().numberofappsuptodate > i;++i){
+            for(int i = 0;GetVersionParserData().numberofappsuptodate > i;++i){
                 xenon::gui::MenuItem menuitem = xenon::gui::MenuItem(GetVersionParserData().appsuptodate[i]);;
                 //menuitem.spriteimage.copy(GetVersionParserData().appsuptodate[i].appicon,0,0);
                 /*menuitem.spriteimage = GetVersionParserData().appsuptodate[i].appicon;
@@ -47,9 +47,9 @@ namespace xenon {
                 menuitem.title.setString(GetVersionParserData().appsuptodate[i].appname);
                 SpawnGenericProgramIcon(&menuitem,&placementvector);
                 programicons.push_back(menuitem);
-                programicons[i-1].spriteimage = GetVersionParserData().appsuptodate[i].appicon;
-                programicons[i-1].spritetexture.loadFromImage(programicons[i-1].spriteimage);
-                programicons[i-1].sprite.setTexture(programicons[i-1].spritetexture);
+                programicons[i].spriteimage = GetVersionParserData().appsuptodate[i].appicon;
+                programicons[i].spritetexture.loadFromImage(programicons[i].spriteimage);
+                programicons[i].sprite.setTexture(programicons[i].spritetexture);
 
                 SetProgramIconLength(GetProgramIconLength()+1);
             }
@@ -61,16 +61,16 @@ namespace xenon {
 
         void AppDrawer::NotUpToDateSpawn(){
             sf::Vector2i placementvector = sf::Vector2i(1,1);
-            for(int i = 1;GetVersionParserData().numberofappsnotuptodate > i;++i){
+            for(int i = 0;GetVersionParserData().numberofappsnotuptodate > i;++i){
                 xenon::gui::MenuItem menuitem = xenon::gui::MenuItem(GetVersionParserData().appsnotuptodate[i]);;
 
                 menuitem.title.setString(GetVersionParserData().appsnotuptodate[i].appname);
                 SpawnGenericProgramIcon(&menuitem,&placementvector);
                 programicons.push_back(menuitem);
 
-                programicons[i-1].spriteimage = GetVersionParserData().appsuptodate[i].appicon;
-                programicons[i-1].spritetexture.loadFromImage(programicons[i-1].spriteimage);
-                programicons[i-1].sprite.setTexture(programicons[i-1].spritetexture);
+                programicons[i].spriteimage = GetVersionParserData().appsnotuptodate[i].appicon;
+                programicons[i].spritetexture.loadFromImage(programicons[i].spriteimage);
+                programicons[i].sprite.setTexture(programicons[i].spritetexture);
 
                 SetProgramIconLength(GetProgramIconLength()+1);
             }
@@ -82,15 +82,15 @@ namespace xenon {
 
         void AppDrawer::SecurityIssueSpawn(){
             sf::Vector2i placementvector = sf::Vector2i(1,1);
-            for(int i = 1;GetVersionParserData().numberofappssecurityissues > i;++i){
+            for(int i = 0;GetVersionParserData().numberofappssecurityissues > i;++i){
                 xenon::gui::MenuItem menuitem = xenon::gui::MenuItem(GetVersionParserData().appssecurityissues[i]);
 
                 menuitem.title.setString(GetVersionParserData().appssecurityissues[i].appname);
                 SpawnGenericProgramIcon(&menuitem,&placementvector);
                 programicons.push_back(menuitem);
-                programicons[i-1].spriteimage = GetVersionParserData().appsuptodate[i].appicon;
-                programicons[i-1].spritetexture.loadFromImage(programicons[i-1].spriteimage);
-                programicons[i-1].sprite.setTexture(programicons[i-1].spritetexture);
+                programicons[i].spriteimage = GetVersionParserData().appssecurityissues[i].appicon;
+                programicons[i].spritetexture.loadFromImage(programicons[i].spriteimage);
+                programicons[i].sprite.setTexture(programicons[i].spritetexture);
 
                 SetProgramIconLength(GetProgramIconLength()+1);
             }
@@ -151,8 +151,12 @@ namespace xenon {
                 GoBackToMainScreen();
             }
             for(int i = 0; GetProgramIconLength() > i; ++i){
-                if(programicons[i].IsClicked(window,lostfocus)){
+                if(programicons[i].IsClicked(window,lostfocus) && !IsLimitClicksSet()){
                     ExecuteExternalApplication(programicons[i].GetAppLocation().c_str());
+                    limitclicks.restart();
+                    SetLimitClicksSet(true);
+                }else if(limitclicks.getElapsedTime().asSeconds() >= 1){
+                    SetLimitClicksSet(false);
                 }
             }
         }
