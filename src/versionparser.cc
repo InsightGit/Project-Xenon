@@ -98,8 +98,12 @@ namespace xenon {
                     appdatatoreturn.appicon.create(FirefoxIcon.width,FirefoxIcon.height,FirefoxIcon.pixel_data);
                 }else if(appname=="Evernote"){
                     appdatatoreturn.appicon.create(EvernoteIcon.width,EvernoteIcon.height,EvernoteIcon.pixel_data);
-                }else if(appname=="Dropbox"){
-                    appdatatoreturn.appicon.create(DropboxIcon.width,DropboxIcon.height,DropboxIcon.pixel_data);
+                }else if(appname=="Google Drive"){
+                    appdatatoreturn.appicon.create(GoogleDriveIcon.width,GoogleDriveIcon.height,GoogleDriveIcon.pixel_data);
+                }else if(appname=="LibreOffice"){
+                    appdatatoreturn.appicon.create(LibreOfficeIcon.width,LibreOfficeIcon.height,LibreOfficeIcon.pixel_data);
+                }else if(appname=="Skype"){
+                    appdatatoreturn.appicon.create(SkypeIcon.width,SkypeIcon.height,SkypeIcon.pixel_data);
                 }
                 return appdatatoreturn;
             }
@@ -114,10 +118,7 @@ namespace xenon {
                 is64bit_= true;
             }
         }
-
-        VersionParser::~VersionParser() {
-            //
-        }
+        VersionParser::~VersionParser(){}
 
         std::vector<std::string> VersionParser::GetPotentialProgramLocations(int *lengthoutput){
             // lists all possible locations for program file locations by searching all logical drives
@@ -168,6 +169,7 @@ namespace xenon {
                             {
                                 //TODO: (Potential Bug) (Bobby if there is) Make it work on 64-bit hardware
                                 float version = HIWORD(versioninfo->dwProductVersionMS);
+                                //
                                 version += float(LOWORD(versioninfo->dwProductVersionMS))*0.1;
                                 version += float(HIWORD(versioninfo->dwProductVersionLS))*0.01;
                                 delete[] verdata;
@@ -180,11 +182,12 @@ namespace xenon {
             return NULL;
         }
 
-        AppStatus VersionParser::GetExistingAppStatus(const std::string appname, const float latestversion, const std::string fullapplocation){
+        AppStatus VersionParser::GetExistingAppStatus(const std::string appname, const float latestversion,
+                                                      const float latestversion2, const std::string fullapplocation){
             char *fullapplocationchar = new char[fullapplocation.length()+1];
             std::strcpy(fullapplocationchar,fullapplocation.c_str());
             float versionnum = GetFileVersion(fullapplocationchar);
-            if(versionnum>=latestversion){
+            if(versionnum>=latestversion || versionnum>=latestversion2){
                 return UpToDate;
             }else if(versionnum < latestversion){
                 if(appname=="Google Chrome"){
@@ -199,8 +202,12 @@ namespace xenon {
                     if(versionnum <= 4.61){
                         return SecurityIssue;
                     }
-                }else if(appname=="Dropbox"){
-                    if(versionnum <= 1.127){
+                }else if(appname=="LibreOffice"){
+                    if(versionnum <= 5.25){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="Skype"){
+                    if(versionnum <= 5.9){
                         return SecurityIssue;
                     }
                 }
@@ -208,7 +215,9 @@ namespace xenon {
             }
         }
 
-        FullAppStatus VersionParser::GetFullAppStatus(const std::string appname, const float latestversion, const std::string applocation){
+        FullAppStatus VersionParser::GetFullAppStatus(const std::string appname, const float latestversion,
+                                                      const std::string applocation,const std::vector<std::string> alternateapplocations,
+                                                      const float latestversion2){
             int lengthofpotentialprogramlocations = 0;
             std::vector<std::string> potentialprogramlocations = GetPotentialProgramLocations(&lengthofpotentialprogramlocations);
             bool foundprogram = false;
@@ -217,13 +226,22 @@ namespace xenon {
                 if(FileExists(potentialprogramlocations[i]+applocation)){
                     foundprogram = true;
                     fullprogramlocation = potentialprogramlocations[i]+applocation;
+                }else if(alternateapplocations.size()!=0){
+                    for(int iterator2 = 0; alternateapplocations.size() > iterator2;++iterator2){
+                        if(FileExists(potentialprogramlocations[i]+alternateapplocations[iterator2])){
+                            foundprogram = true;
+                            fullprogramlocation = potentialprogramlocations[i]+alternateapplocations[iterator2];
+                        }
+                    }
+                }
+                if(foundprogram){
                     break;
                 }
             }
             FullAppStatus returnvalue;
             returnvalue.fullapplocation = fullprogramlocation;
             if(foundprogram){
-                returnvalue.appstatus = GetExistingAppStatus(appname,latestversion,returnvalue.fullapplocation);
+                returnvalue.appstatus = GetExistingAppStatus(appname,latestversion,latestversion2,returnvalue.fullapplocation);
             }else{
                 returnvalue.appstatus = NonExistant;
             }
@@ -233,9 +251,22 @@ namespace xenon {
         VersionParserData VersionParser::ParseVersions(){
             VersionParserData datatoreturn;
             for(int i = 0;appproperties["updateapps"]["number"].GetInt() > i;++i){
-                FullAppStatus status = GetFullAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),
-                        appproperties["updateapps"]["list"][i]["latestversion"].GetFloat(),
-                        appproperties["updateapps"]["list"][i]["applocation"].GetString());
+                FullAppStatus status;
+                if(appproperties["updateapps"]["list"][i].HasMember("alternateapplocations")){
+                    std::vector<std::string> potentialapplocations;
+                    for(int iterator2 = 0;appproperties["updateapps"]["list"][i]["aallength"].GetInt() > iterator2; ++iterator2){
+                        potentialapplocations.push_back(appproperties["updateapps"]["list"]
+                                                       [i]["alternateapplocations"][iterator2].GetString());
+                    }
+                    status = GetFullAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),
+                            appproperties["updateapps"]["list"][i]["latestversion"].GetFloat(),
+                            appproperties["updateapps"]["list"][i]["applocation"].GetString(),potentialapplocations,
+                            appproperties["updateapps"]["list"][i]["latestversion2"].GetFloat());
+                }else{
+                    status = GetFullAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),
+                            appproperties["updateapps"]["list"][i]["latestversion"].GetFloat(),
+                            appproperties["updateapps"]["list"][i]["applocation"].GetString());
+                }
                 AppData appdata = internaldict::NameToAppData(appproperties["updateapps"]["list"][i]["name"].GetString(),status.fullapplocation);
                 if(status.appstatus == UpToDate){
                     datatoreturn.appsuptodate.push_back(appdata);

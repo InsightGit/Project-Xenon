@@ -15,7 +15,8 @@ namespace xenon {
     }
 
     Scene::~Scene() {
-        delete mainscreen, appdrawer;
+        delete mainscreen;
+        delete appdrawer;
     }
 
     bool Scene::Spawn(){

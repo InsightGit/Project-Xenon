@@ -8,6 +8,7 @@
 #ifndef CLICKABLESPRITE_H_
 #define CLICKABLESPRITE_H_
 
+#define __USE_MINGW_ANSI_STDIO 0
 
 #include <SFML/Graphics.hpp>
 

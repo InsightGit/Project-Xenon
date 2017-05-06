@@ -7,6 +7,8 @@
 
 #ifndef SCENE_H_
 #define SCENE_H_
+#define __USE_MINGW_ANSI_STDIO 0
+
 #include <tchar.h>
 #include <Shlobj.h>
 #include <windows.h>

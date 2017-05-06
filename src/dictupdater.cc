@@ -17,9 +17,9 @@ namespace xenon {
             }
         }
 
-        DictUpdater::~DictUpdater() {
+        /*DictUpdater::~DictUpdater() {
             // TODO Auto-generated destructor stub
-        }
+        }*/
 
         void DictUpdater::Update(){
             sf::Packet packet;

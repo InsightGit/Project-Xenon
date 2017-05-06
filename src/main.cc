@@ -6,6 +6,8 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
+#define __USE_MINGW_ANSI_STDIO 0
+
 #include <iostream>
 
 #include "scene.h"

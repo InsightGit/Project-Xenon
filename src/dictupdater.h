@@ -23,7 +23,7 @@ namespace xenon {
         class DictUpdater {
         public:
             DictUpdater();
-            virtual ~DictUpdater();
+            //virtual ~DictUpdater();
 
             bool CheckForUpdates();
         protected:

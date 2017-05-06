@@ -5,10 +5,11 @@
  *      Author: Bobby
  */
 
-#define __USE_MINGW_ANSI_STDIO 0
-
 #ifndef VERSIONPARSER_H_
 #define VERSIONPARSER_H_
+
+#define __USE_MINGW_ANSI_STDIO 0
+
 #include <windows.h>
 
 #include <stdexcept>
@@ -25,7 +26,9 @@
 #include "Resources/chromeicon.h"
 #include "Resources/firefoxicon.h"
 #include "Resources/evernoteicon.h"
-#include "Resources/dropboxicon.h"
+#include "Resources/googledriveicon.h"
+#include "Resources/libreofficeicon.h"
+#include "Resources/skypeicon.h"
 
 namespace xenon {
     namespace dict {
@@ -77,8 +80,14 @@ namespace xenon {
             std::vector<std::string> GetPotentialProgramLocations(int *lengthoutput);
             // applocation refers to a relative path started in program files directory
             float GetFileVersion(const char *filepath);
-            AppStatus GetExistingAppStatus(const std::string appname, const float latestversion, const std::string fullapplocation);
-            FullAppStatus GetFullAppStatus(const std::string appname, const float latestversion, const std::string applocation);
+            AppStatus GetExistingAppStatus(const std::string appname, const float latestversion,
+                                                                      const float latestversion2, const std::string fullapplocation);
+
+            FullAppStatus GetFullAppStatus(const std::string appname, const float latestversion,
+                                           const std::string applocation,
+                                           const std::vector<std::string> alternateapplocations = std::vector<std::string>(),
+                                           const float latestversion2 = 9999999);
+
             bool FileExists(std::string filepath){
                 std::ifstream filetoverify(filepath);
 
