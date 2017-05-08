@@ -30,6 +30,10 @@ namespace xenon {
         }else if(currentevent->type == sf::Event::GainedFocus){
             SetLostFocus(false);
         }
+
+        if(IsAppDrawerSpawned()){
+            appdrawer->EventUpdate(currentevent);
+        }
     }
 
     void Scene::Update(sf::RenderWindow *window){

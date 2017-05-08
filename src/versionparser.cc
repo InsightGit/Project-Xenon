@@ -104,6 +104,12 @@ namespace xenon {
                     appdatatoreturn.appicon.create(LibreOfficeIcon.width,LibreOfficeIcon.height,LibreOfficeIcon.pixel_data);
                 }else if(appname=="Skype"){
                     appdatatoreturn.appicon.create(SkypeIcon.width,SkypeIcon.height,SkypeIcon.pixel_data);
+                }else if(appname=="VLC"){
+                    appdatatoreturn.appicon.create(VLCIcon.width,VLCIcon.height,VLCIcon.pixel_data);
+                }else if(appname=="GIMP"){
+                    appdatatoreturn.appicon.create(GIMPIcon.width,GIMPIcon.height,GIMPIcon.pixel_data);
+                }else if(appname=="µTorrent"){
+                    appdatatoreturn.appicon.create(uTorrentIcon.width,uTorrentIcon.height,uTorrentIcon.pixel_data);
                 }
                 return appdatatoreturn;
             }
@@ -210,6 +216,18 @@ namespace xenon {
                     if(versionnum <= 5.9){
                         return SecurityIssue;
                     }
+                }else if(appname=="VLC"){
+                    if(versionnum <= 2.23){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="GIMP"){
+                    if(versionnum <= 2.816){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="µTorrent"){
+                    if(versionnum <= 1.83){
+                        return SecurityIssue;
+                    }
                 }
                 return NotUpToDate;
             }
@@ -223,12 +241,12 @@ namespace xenon {
             bool foundprogram = false;
             std::string fullprogramlocation;
             for(int i = 0;potentialprogramlocations.size() > i;++i){
-                if(FileExists(potentialprogramlocations[i]+applocation)){
+                if(FileExists(std::string(potentialprogramlocations[i]+applocation).c_str())){
                     foundprogram = true;
                     fullprogramlocation = potentialprogramlocations[i]+applocation;
                 }else if(alternateapplocations.size()!=0){
                     for(int iterator2 = 0; alternateapplocations.size() > iterator2;++iterator2){
-                        if(FileExists(potentialprogramlocations[i]+alternateapplocations[iterator2])){
+                        if(FileExists(std::string(potentialprogramlocations[i]+alternateapplocations[iterator2]).c_str())){
                             foundprogram = true;
                             fullprogramlocation = potentialprogramlocations[i]+alternateapplocations[iterator2];
                         }
@@ -266,6 +284,15 @@ namespace xenon {
                     status = GetFullAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),
                             appproperties["updateapps"]["list"][i]["latestversion"].GetFloat(),
                             appproperties["updateapps"]["list"][i]["applocation"].GetString());
+                }
+                if(status.appstatus==NonExistant && appproperties["updateapps"]["list"][i].HasMember("directpath")){
+                    if(FileExists(appproperties["updateapps"]["list"][i]["directpath"].GetString())){
+                        status.fullapplocation = appproperties["updateapps"]["list"][i]["directpath"].GetString();
+                        status.appstatus = GetExistingAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),
+                                                               appproperties["updateapps"]["list"][i]["latestversion"].GetInt(),
+                                                               appproperties["updateapps"]["list"][i]["latestversion2"].GetInt(),
+                                                               status.fullapplocation);
+                    }
                 }
                 AppData appdata = internaldict::NameToAppData(appproperties["updateapps"]["list"][i]["name"].GetString(),status.fullapplocation);
                 if(status.appstatus == UpToDate){

@@ -30,7 +30,7 @@ namespace xenon {
 
             void Spawn();
 
-            void Update(sf::RenderWindow *window, bool lostfocus);
+            void EventUpdate(sf::Event *currentevent);
 
             void Draw(sf::RenderWindow *window, bool lostfocus);
         protected:
@@ -46,6 +46,7 @@ namespace xenon {
             void NotUpToDateSpawn();
             void SecurityIssueSpawn();
 
+            void Update(sf::RenderWindow *window, bool lostfocus);
 
             void ExecuteExternalApplication(const TCHAR *appname);
 
@@ -76,11 +77,30 @@ namespace xenon {
             void SetLimitClicksSet(bool limitclicksset = false) {
                 limitclicksset_ = limitclicksset;
             }
+
+            float GetBottomScrollLimit() const {
+                return bottomscrolllimit_;
+            }
+
+            void SetBottomScrollLimit(float bottomscrolllimit) {
+                bottomscrolllimit_ = bottomscrolllimit;
+            }
+
+            float GetTopScrollLimit() const {
+                return topscrolllimit_;
+            }
+
+            void SetTopScrollLimit(float topscrolllimit) {
+                topscrolllimit_ = topscrolllimit;
+            }
+
         private:
             xenon::dict::VersionParserData versionparserdata_;
             xenon::dict::AppStatus appstatus_;
             xenon::Scene *currentscene_;
             unsigned int programiconlength_ = 0;
+            float topscrolllimit_;
+            float bottomscrolllimit_;
             bool limitclicksset_ = false;
         };
     } /* namespace gui */

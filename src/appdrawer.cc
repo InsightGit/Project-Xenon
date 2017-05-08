@@ -53,6 +53,12 @@ namespace xenon {
                 programicons[i].sprite.setTexture(programicons[i].spritetexture);
 
                 SetProgramIconLength(GetProgramIconLength()+1);
+
+                if(i==0){
+                    SetTopScrollLimit(programicons[i].sprite.getPosition().y+100);
+                }else if(i==GetVersionParserData().numberofappsuptodate-1){
+                    SetBottomScrollLimit(programicons[i].sprite.getPosition().y+100);
+                }
             }
             //handle banner image loading
             banner.spriteimage.create(UpToDateBanner.width,UpToDateBanner.height,UpToDateBanner.pixel_data);
@@ -74,6 +80,12 @@ namespace xenon {
                 programicons[i].sprite.setTexture(programicons[i].spritetexture);
 
                 SetProgramIconLength(GetProgramIconLength()+1);
+
+                if(i==0){
+                    SetTopScrollLimit(programicons[i].sprite.getPosition().y+100);
+                }else if(i==GetVersionParserData().numberofappsnotuptodate-1){
+                    SetBottomScrollLimit(programicons[i].sprite.getPosition().y+100);
+                }
             }
             //handle banner image loading
             banner.spriteimage.create(NotUpToDateBanner.width,NotUpToDateBanner.height,NotUpToDateBanner.pixel_data);
@@ -94,6 +106,12 @@ namespace xenon {
                 programicons[i].sprite.setTexture(programicons[i].spritetexture);
 
                 SetProgramIconLength(GetProgramIconLength()+1);
+
+                if(i==0){
+                    SetTopScrollLimit(programicons[i].sprite.getPosition().y+100);
+                }else if(i==GetVersionParserData().numberofappssecurityissues-1){
+                    SetBottomScrollLimit(programicons[i].sprite.getPosition().y+100);
+                }
             }
             //handle banner image loading
             banner.spriteimage.create(SecurityIssueBanner.width,SecurityIssueBanner.height,SecurityIssueBanner.pixel_data);
@@ -147,6 +165,17 @@ namespace xenon {
              CloseHandle( processinfo.hThread );
         }
 
+        void AppDrawer::EventUpdate(sf::Event *currentevent){
+            if(currentevent->type == sf::Event::MouseWheelScrolled){
+                if(currentevent->mouseWheelScroll.wheel == sf::Mouse::VerticalWheel){
+                    float viewymovement = currentevent->mouseWheelScroll.delta*-20;
+                    if(GetTopScrollLimit() < viewymovement && GetBottomScrollLimit() > viewymovement){
+                        programsview.move(sf::Vector2f(0,viewymovement));
+                    }
+                }
+            }
+        }
+
         void AppDrawer::Update(sf::RenderWindow *window, bool lostfocus){
             if(bannerbackarrow.IsClicked(window,lostfocus)){
                 GoBackToMainScreen();
@@ -167,10 +196,15 @@ namespace xenon {
         void AppDrawer::Draw(sf::RenderWindow *window, bool lostfocus){
             Update(window,lostfocus);
 
+            window->setView(programsview);
+
             for(int i = 0; programicons.size() > i; ++i){
                 window->draw(programicons[i].sprite);
                 window->draw(programicons[i].title);
             }
+
+            window->setView(window->getDefaultView());
+
             window->draw(banner.sprite);
             window->draw(bannerbackarrow.sprite);
         }

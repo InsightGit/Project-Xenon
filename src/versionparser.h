@@ -29,6 +29,9 @@
 #include "Resources/googledriveicon.h"
 #include "Resources/libreofficeicon.h"
 #include "Resources/skypeicon.h"
+#include "Resources/vlcicon.h"
+#include "Resources/gimpicon.h"
+#include "Resources/utorrenticon.h"
 
 namespace xenon {
     namespace dict {
@@ -88,10 +91,11 @@ namespace xenon {
                                            const std::vector<std::string> alternateapplocations = std::vector<std::string>(),
                                            const float latestversion2 = 9999999);
 
-            bool FileExists(std::string filepath){
-                std::ifstream filetoverify(filepath);
+            bool FileExists(const char *filepath){
+                DWORD attributes = GetFileAttributes(filepath);
 
-                return filetoverify.good();
+                return (attributes != INVALID_FILE_ATTRIBUTES &&
+                       !(attributes & FILE_ATTRIBUTE_DIRECTORY));
             }
 
             bool DirectoryExists(const char *filepath){
