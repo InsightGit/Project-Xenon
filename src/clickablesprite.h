@@ -20,7 +20,9 @@ namespace xenon {
            sf::Image spriteimage;
            sf::Sprite sprite;
 
-           bool IsClicked(sf::RenderWindow *window,bool lostfocus,sf::Mouse::Button buttonpressed = sf::Mouse::Left);
+
+           bool IsClicked(sf::RenderWindow *window, bool lostfocus, bool usingcustomview = false,
+                   sf::View viewtouse = sf::View(), sf::Mouse::Button buttonpressed = sf::Mouse::Left);
         };
     } /* namespace gui */
 } /* namespace xenon */

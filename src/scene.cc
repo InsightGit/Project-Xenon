@@ -16,7 +16,9 @@ namespace xenon {
 
     Scene::~Scene() {
         delete mainscreen;
-        delete appdrawer;
+        if(IsAppDrawerSpawned()){
+            delete appdrawer;
+        }
     }
 
     bool Scene::Spawn(){
@@ -51,6 +53,16 @@ namespace xenon {
     void Scene::Draw(sf::RenderWindow *window){
         Update(window);
         if(GetId()==0){
+            //updates VersionDict.json
+            sf::Http httpobject;
+            sf::Http::Request versiondictrequest("VersionDict.json");
+            httpobject.setHost("infernostudios.me");
+            sf::Http::Response versiondictrequeststatus = httpobject.sendRequest(versiondictrequest);
+            if(versiondictrequeststatus.getStatus() == sf::Http::Response::Ok){
+                    if(GetJsonFileText()!=versiondictrequeststatus.getBody()){
+                        UpdateJsonVersionDict(versiondictrequeststatus.getBody());
+                    }
+            }
             //checks apps version scene
             xenon::dict::VersionParser parser(GetJsonFileText());
             SetAppStatuses(parser.ParseVersions());

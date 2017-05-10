@@ -108,8 +108,24 @@ namespace xenon {
                     appdatatoreturn.appicon.create(VLCIcon.width,VLCIcon.height,VLCIcon.pixel_data);
                 }else if(appname=="GIMP"){
                     appdatatoreturn.appicon.create(GIMPIcon.width,GIMPIcon.height,GIMPIcon.pixel_data);
-                }else if(appname=="µTorrent"){
+                }else if(appname=="uTorrent"){
                     appdatatoreturn.appicon.create(uTorrentIcon.width,uTorrentIcon.height,uTorrentIcon.pixel_data);
+                }else if(appname=="F.lux"){
+                    appdatatoreturn.appicon.create(FluxIcon.width,FluxIcon.height,FluxIcon.pixel_data);
+                }else if(appname=="Spotify"){
+                    appdatatoreturn.appicon.create(SpotifyIcon.width,SpotifyIcon.height,SpotifyIcon.pixel_data);
+                }else if(appname=="7-Zip"){
+                    appdatatoreturn.appicon.create(SevenZipIcon.width,SevenZipIcon.height,SevenZipIcon.pixel_data);
+                }else if(appname=="iTunes"){
+                    appdatatoreturn.appicon.create(iTunesIcon.width,iTunesIcon.height,iTunesIcon.pixel_data);
+                }else if(appname=="Notepad++"){
+                    appdatatoreturn.appicon.create(NotepadPlusPlusIcon.width,NotepadPlusPlusIcon.height,NotepadPlusPlusIcon.pixel_data);
+                }else if(appname=="Thunderbird"){
+                    appdatatoreturn.appicon.create(ThunderbirdIcon.width,ThunderbirdIcon.height,ThunderbirdIcon.pixel_data);
+                }else if(appname=="Opera"){
+                    appdatatoreturn.appicon.create(OperaIcon.width,OperaIcon.height,OperaIcon.pixel_data);
+                }else if(appname=="CCleaner"){
+                    appdatatoreturn.appicon.create(CCleanerIcon.width,CCleanerIcon.height,CCleanerIcon.pixel_data);
                 }
                 return appdatatoreturn;
             }
@@ -118,11 +134,13 @@ namespace xenon {
         VersionParser::VersionParser(const std::string jsontext) {
             appproperties.Parse(jsontext.c_str());
 
-            if(sizeof(size_t) == 4){
+            /*if(sizeof(size_t) == 4){
                 is64bit_= false;
             }else if(sizeof(size_t) == 8){
                 is64bit_= true;
-            }
+            }*/
+
+            is64bit_= true;
         }
         VersionParser::~VersionParser(){}
 
@@ -140,12 +158,10 @@ namespace xenon {
                     programfilespath.append("/Program Files/");
                     potentialprogramlocations.push_back(programfilespath);
                     *lengthoutput++;
-                    if(is64bit_){
-                        std::string programfilespath = singledrivepath;
-                        programfilespath.append("/Program Files (x86)/");
-                        potentialprogramlocations.push_back(programfilespath);
-                        *lengthoutput++;
-                    }
+                    std::string programfilesx86path = singledrivepath;
+                    programfilesx86path.append("/Program Files (x86)/");
+                    potentialprogramlocations.push_back(programfilesx86path);
+                    *lengthoutput++;
                 }
                 // increments string length to go to next drive
                 singledrivepath += strlen(singledrivepath) + 1;
@@ -173,11 +189,12 @@ namespace xenon {
                             VS_FIXEDFILEINFO *versioninfo = (VS_FIXEDFILEINFO *)buffer;
                             if (versioninfo->dwSignature == 0xfeef04bd)
                             {
-                                //TODO: (Potential Bug) (Bobby if there is) Make it work on 64-bit hardware
-                                float version = HIWORD(versioninfo->dwProductVersionMS);
-                                //
-                                version += float(LOWORD(versioninfo->dwProductVersionMS))*0.1;
-                                version += float(HIWORD(versioninfo->dwProductVersionLS))*0.01;
+                                float major = (versioninfo->dwProductVersionMS >> 16) & 0xffff;
+                                float minor = (versioninfo->dwProductVersionMS >>  0) & 0xffff;
+                                float revision = (versioninfo->dwProductVersionLS >> 16) & 0xffff;
+
+                                float version = major+(minor*0.1)+(revision*0.0001);
+
                                 delete[] verdata;
                                 return version;
                             }
@@ -205,11 +222,11 @@ namespace xenon {
                         return SecurityIssue;
                     }
                 }else if(appname=="Evernote"){
-                    if(versionnum <= 4.61){
+                    if(versionnum <= 4.6001){
                         return SecurityIssue;
                     }
                 }else if(appname=="LibreOffice"){
-                    if(versionnum <= 5.25){
+                    if(versionnum <= 5.2005){
                         return SecurityIssue;
                     }
                 }else if(appname=="Skype"){
@@ -217,15 +234,47 @@ namespace xenon {
                         return SecurityIssue;
                     }
                 }else if(appname=="VLC"){
-                    if(versionnum <= 2.23){
+                    if(versionnum <= 2.2003){
                         return SecurityIssue;
                     }
                 }else if(appname=="GIMP"){
-                    if(versionnum <= 2.816){
+                    if(versionnum <= 2.8016){
                         return SecurityIssue;
                     }
-                }else if(appname=="µTorrent"){
-                    if(versionnum <= 1.83){
+                }else if(appname=="uTorrent"){
+                    if(versionnum <= 1.8003){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="F.lux"){
+                    if(versionnum <= 3.10){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="Spotify"){
+                    if(versionnum <= 0.8002){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="7-Zip"){
+                    if(versionnum <= 16.0){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="iTunes"){
+                    if(versionnum < 12.6){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="Notepad++"){
+                    if(versionnum < 7.3003){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="Thunderbird"){
+                    if(versionnum < 45.0){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="Opera"){
+                    if(versionnum < 36.0){
+                        return SecurityIssue;
+                    }
+                }else if(appname=="CCleaner"){
+                    if(versionnum < 5.0002){
                         return SecurityIssue;
                     }
                 }
@@ -285,13 +334,22 @@ namespace xenon {
                             appproperties["updateapps"]["list"][i]["latestversion"].GetFloat(),
                             appproperties["updateapps"]["list"][i]["applocation"].GetString());
                 }
-                if(status.appstatus==NonExistant && appproperties["updateapps"]["list"][i].HasMember("directpath")){
-                    if(FileExists(appproperties["updateapps"]["list"][i]["directpath"].GetString())){
-                        status.fullapplocation = appproperties["updateapps"]["list"][i]["directpath"].GetString();
-                        status.appstatus = GetExistingAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),
-                                                               appproperties["updateapps"]["list"][i]["latestversion"].GetInt(),
-                                                               appproperties["updateapps"]["list"][i]["latestversion2"].GetInt(),
-                                                               status.fullapplocation);
+                if(status.appstatus==NonExistant && appproperties["updateapps"]["list"][i].HasMember("homepathlocation")){
+                    status.fullapplocation = "C:";
+                    status.fullapplocation.append(getenv("HOMEPATH"));
+                    status.fullapplocation.append(appproperties["updateapps"]["list"][i]["homepathlocation"].GetString());
+                    if(FileExists(status.fullapplocation.c_str())){
+                        if(appproperties["updateapps"]["list"][i].HasMember("latestversion2")){
+                            status.appstatus = GetExistingAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),
+                                                                   appproperties["updateapps"]["list"][i]["latestversion"].GetFloat(),
+                                                                   appproperties["updateapps"]["list"][i]["latestversion2"].GetFloat(),
+                                                                   status.fullapplocation);
+                        }else{
+                            status.appstatus = GetExistingAppStatus(appproperties["updateapps"]["list"][i]["name"].GetString(),
+                                                                   appproperties["updateapps"]["list"][i]["latestversion"].GetFloat(),
+                                                                   99999,
+                                                                   status.fullapplocation);
+                        }
                     }
                 }
                 AppData appdata = internaldict::NameToAppData(appproperties["updateapps"]["list"][i]["name"].GetString(),status.fullapplocation);

@@ -10,6 +10,7 @@
 
 #define __USE_MINGW_ANSI_STDIO 0
 
+#include <stdlib.h>
 #include <windows.h>
 
 #include <stdexcept>
@@ -32,6 +33,14 @@
 #include "Resources/vlcicon.h"
 #include "Resources/gimpicon.h"
 #include "Resources/utorrenticon.h"
+#include "Resources/f.luxicon.h"
+#include "Resources/spotifyicon.h"
+#include "Resources/7zipicon.h"
+#include "Resources/itunesicon.h"
+#include "Resources/notepad++icon.h"
+#include "Resources/thunderbirdicon.h"
+#include "Resources/operaicon.h"
+#include "Resources/ccleanericon.h"
 
 namespace xenon {
     namespace dict {
@@ -91,6 +100,12 @@ namespace xenon {
                                            const std::vector<std::string> alternateapplocations = std::vector<std::string>(),
                                            const float latestversion2 = 9999999);
 
+            bool FileOrDirectoryExists(const char *filepath){
+                DWORD attributes = GetFileAttributes(filepath);
+
+                return (attributes != INVALID_FILE_ATTRIBUTES);
+            }
+
             bool FileExists(const char *filepath){
                 DWORD attributes = GetFileAttributes(filepath);
 
@@ -104,6 +119,10 @@ namespace xenon {
                 return (attributes != INVALID_FILE_ATTRIBUTES &&
                        (attributes & FILE_ATTRIBUTE_DIRECTORY));
             }
+
+            bool Is64Bit() const {
+                 return is64bit_;
+             }
         private:
             bool is64bit_ = false;
         };

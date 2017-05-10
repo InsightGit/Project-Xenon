@@ -30,7 +30,7 @@ namespace xenon {
             menuitemtouse->sprite.setPosition(placementvector->x*150,placementvector->y*150);
             menuitemtouse->title.setPosition(menuitemtouse->sprite.getPosition().x, menuitemtouse->sprite.getPosition().y+138);
             placementvector->x++;
-            if(placementvector->x >= 4){
+            if(placementvector->x >= 5){
                 placementvector->x = 0;
                 placementvector->y++;
             }
@@ -55,9 +55,9 @@ namespace xenon {
                 SetProgramIconLength(GetProgramIconLength()+1);
 
                 if(i==0){
-                    SetTopScrollLimit(programicons[i].sprite.getPosition().y+100);
+                    SetTopScrollLimit(programicons[i].title.getPosition().y-100);
                 }else if(i==GetVersionParserData().numberofappsuptodate-1){
-                    SetBottomScrollLimit(programicons[i].sprite.getPosition().y+100);
+                    SetBottomScrollLimit(programicons[i].title.getPosition().y+100);
                 }
             }
             //handle banner image loading
@@ -169,7 +169,7 @@ namespace xenon {
             if(currentevent->type == sf::Event::MouseWheelScrolled){
                 if(currentevent->mouseWheelScroll.wheel == sf::Mouse::VerticalWheel){
                     float viewymovement = currentevent->mouseWheelScroll.delta*-20;
-                    if(GetTopScrollLimit() < viewymovement && GetBottomScrollLimit() > viewymovement){
+                    if(GetTopScrollLimit() < viewymovement+programsview.getCenter().y && GetBottomScrollLimit() > viewymovement+programsview.getCenter().y){
                         programsview.move(sf::Vector2f(0,viewymovement));
                     }
                 }
@@ -181,7 +181,7 @@ namespace xenon {
                 GoBackToMainScreen();
             }
             for(int i = 0; GetProgramIconLength() > i; ++i){
-                if(programicons[i].IsClicked(window,lostfocus) && !IsLimitClicksSet()){
+                if(programicons[i].IsClicked(window,lostfocus,true,programsview) && !IsLimitClicksSet()){
                     ExecuteExternalApplication(programicons[i].GetAppLocation().c_str());
                     limitclicks.restart();
                     SetLimitClicksSet(true);

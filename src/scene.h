@@ -63,9 +63,7 @@ namespace xenon {
         }
 
         std::string GetJsonFileText(){
-            std::string path = getenv("APPDATA");
-            path.append("/VersionDict.json");
-            std::cout << "Path:" << path << "\n";
+            std::string path = "VersionDict.json";
             std::ifstream jsonfile(path);
             std::stringstream jsonfilebuffer;
             jsonfilebuffer << jsonfile.rdbuf();
@@ -73,6 +71,12 @@ namespace xenon {
             return jsonfilebuffer.str();
         }
 
+        void UpdateJsonVersionDict(const std::string texttouse){
+            std::string path = "VersionDict.json";
+            std::ofstream versiondictfile(path,std::ofstream::out);
+            versiondictfile << texttouse;
+            versiondictfile.close();
+        }
 
         const dict::VersionParserData& GetAppStatuses() const {
             return appstatuses_;

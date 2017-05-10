@@ -1,0 +1,98 @@
+{
+  "updateapps": {
+    "number": 17,
+    "list": [
+      {
+        "name": "Google Chrome",
+        "latestversion": 58.003029,
+        "applocation": "Google/Chrome/Application/chrome.exe"
+      },
+      {
+        "name": "Mozilla Firefox",
+        "latestversion": 53.00,
+        "applocation": "Mozilla Firefox/firefox.exe"
+      },
+      {
+        "name": "Evernote",
+        "latestversion": 6.5004,
+        "applocation": "Evernote/Evernote/Evernote.exe"
+      },
+      {
+        "name": "Google Drive",
+        "latestversion": 2.345075,
+        "applocation": "Google/Drive/googledrivesync.exe"
+      },
+	  {
+        "name": "LibreOffice",
+        "latestversion": 5.3002,
+		"latestversion2": 5.2007,
+        "applocation": "LibreOffice 5/program/soffice.exe",
+		"alternateapplocations": ["LibreOffice 4/program/soffice.exe","LibreOffice 3.6/program/soffice.exe"],
+		"aallength": 2
+      },
+	  {
+        "name": "Skype",
+        "latestversion": 7.3005,
+        "applocation": "Skype/Phone/Skype.exe"
+      },
+	  {
+        "name": "VLC",
+        "latestversion": 2.2004,
+        "applocation": "VideoLAN/VLC/vlc.exe"
+      },
+	  {
+        "name": "GIMP",
+        "latestversion": 2.8020,
+        "applocation": "GIMP 2/bin/gimp-2.8.exe"
+      },
+	  {
+        "name": "uTorrent",
+        "latestversion": 3.050,
+        "applocation": "",
+		"homepathlocation": "/AppData/Roaming/uTorrent/uTorrent.exe"
+      },
+	  {
+        "name": "F.lux",
+        "latestversion": 3.1002,
+        "applocation": "",
+		"homepathlocation": "/AppData/Local/FluxSoftware/Flux/flux.exe"
+      },
+	  {
+        "name": "Spotify",
+        "latestversion": 1.0053,
+        "applocation": "",
+		"homepathlocation": "/AppData/Roaming/Spotify/Spotify.exe"
+      },
+	  {
+        "name": "7-Zip",
+        "latestversion": 16.40,
+        "applocation": "7-Zip/7zFM.exe"
+      },
+	  {
+        "name": "iTunes",
+        "latestversion": 12.600,
+        "applocation": "iTunes/iTunes.exe"
+      },
+	  {
+        "name": "Notepad++",
+        "latestversion": 7.3003,
+        "applocation": "Notepad++/notepad++.exe"
+      },
+	  {
+        "name": "Thunderbird",
+        "latestversion": 52.1,
+        "applocation": "Mozilla Thunderbird/thunderbird.exe"
+      },
+	  {
+        "name": "Opera",
+        "latestversion": 44.0,
+        "applocation": "Opera/launcher.exe"
+      },
+	  {
+        "name": "CCleaner",
+        "latestversion": 5.2009,
+        "applocation": "CCleaner/CCleaner.exe"
+      }
+    ]
+  }
+}
